@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+import datetime
 
 __all__ = (
     'get_moscow_datetime_now',
@@ -6,4 +6,4 @@ __all__ = (
 
 
 def get_moscow_datetime_now() -> datetime:
-    return datetime.utcnow() + timedelta(hours=3)
+    return datetime.datetime.utcnow() + datetime.timedelta(hours=3)
