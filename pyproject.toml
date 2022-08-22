@@ -9,6 +9,9 @@ python = "^3.10"
 fastapi = "^0.79.0"
 uvicorn = "^0.18.2"
 python-dotenv = "^0.20.0"
+sse-starlette = "^1.1.6"
+tortoise-orm = {extras = ["asyncpg"], version = "^0.19.2"}
+redis = "^4.3.4"
 
 [tool.poetry.dev-dependencies]
 
