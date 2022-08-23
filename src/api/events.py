@@ -1,9 +1,10 @@
 import asyncio
+import json
 import uuid
 
 from fastapi import APIRouter, Response, status
 from fastapi.params import Depends
-from sse_starlette import EventSourceResponse
+from sse_starlette import EventSourceResponse, ServerSentEvent
 
 import models
 from api.dependencies import get_event_channels
@@ -19,7 +20,11 @@ async def gen(event_channels: EventChannels, request_uuid: uuid.UUID, delay: int
         while True:
             event = await event_channels.get_event_or_none(request_uuid)
             if event is not None:
-                yield event.dict(by_alias=True)
+                yield ServerSentEvent(
+                    data=event.data.json(),
+                    event=event.event_type.name,
+                    id=str(event.id)
+                )
             await asyncio.sleep(delay)
     except asyncio.CancelledError as error:
         # async code here won't be executed, so unsubscribe method is not async
