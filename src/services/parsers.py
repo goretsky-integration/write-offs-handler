@@ -35,6 +35,11 @@ def is_passed_periodic_time(passed_seconds: int, interval_in_seconds: int = 600,
     Returns:
         True if range (calculated with intervals and deviations) includes passed seconds, otherwise False.
     """
+    if passed_seconds < 0:
+        raise ValueError('Passed time can not be negative')
+    if interval_in_seconds <= deviation:
+        raise ValueError('Deviation can not be bigger than interval')
+
     interval_multiplier = round(passed_seconds / interval_in_seconds)
     comparable_threshold = interval_multiplier * interval_in_seconds
     return (comparable_threshold - deviation) <= passed_seconds <= (comparable_threshold + deviation)
