@@ -1,3 +1,7 @@
+import models
+from resources import time_helpers
+
+
 def is_passed_periodic_time(passed_seconds: int, interval_in_seconds: int = 600, deviation: int = 20) -> bool:
     """Determine if precise time (or with deviation) has been passed since 0 seconds.
     It starts counting from 0 to N with some interval.
@@ -43,3 +47,19 @@ def is_passed_periodic_time(passed_seconds: int, interval_in_seconds: int = 600,
     interval_multiplier = round(passed_seconds / interval_in_seconds)
     comparable_threshold = interval_multiplier * interval_in_seconds
     return (comparable_threshold - deviation) <= passed_seconds <= (comparable_threshold + deviation)
+
+
+def determine_event_type_or_none(write_off: models.NotWrittenOffIngredient) -> models.EventType | None:
+    seconds_before_expire = (write_off.write_off_at - time_helpers.get_moscow_datetime_now()).total_seconds()
+    if seconds_before_expire <= 0 and is_passed_periodic_time(passed_seconds=abs(seconds_before_expire),
+                                                              interval_in_seconds=600,
+                                                              deviation=20):
+        return models.EventType.ALREADY_EXPIRED
+    event_types_by_ranges = (
+        (880, 920, models.EventType.EXPIRE_AT_15_MINUTES),
+        (580, 620, models.EventType.EXPIRE_AT_10_MINUTES),
+        (280, 320, models.EventType.EXPIRE_AT_5_MINUTES),
+    )
+    for range_start, range_stop, event_type in event_types_by_ranges:
+        if range_start <= seconds_before_expire <= range_stop:
+            return event_type
