@@ -24,13 +24,13 @@ def test_is_ingredient_expired_correct_cases(passed_seconds, interval_in_seconds
 
 def test_is_ingredient_expired_negative_passed_seconds():
     with pytest.raises(ValueError) as error:
-        is_passed_periodic_time(-1, interval_in_seconds=10, deviation=10)
+        is_passed_periodic_time(-1, interval_in_seconds=10, deviation_in_seconds=10)
     assert error.value.args[0] == 'Passed time can not be negative'
 
 
 def test_is_ingredient_expired_deviation_bigger_than_interval():
     with pytest.raises(ValueError) as error:
-        is_passed_periodic_time(0, interval_in_seconds=10, deviation=11)
+        is_passed_periodic_time(0, interval_in_seconds=10, deviation_in_seconds=11)
     assert error.value.args[0] == 'Deviation can not be bigger than interval'
 
 
@@ -46,15 +46,15 @@ def patch_get_moscow_datetime_now():
 @pytest.mark.parametrize(
     'time_as_string,event_type',
     [
-        ('15:00', 'Expired'),
-        ('14:50', 'Expired'),
-        ('14:40', 'Expired'),
-        ('14:30', 'Expired'),
-        ('12:20', 'Expired'),
-        ('05:10', 'Expired'),
-        ('15:20:40', '10 minutes'),
-        ('15:25:00', '15 minutes'),
-        ('15:15:00', '5 minutes'),
+        ('15:00', models.EventType.ALREADY_EXPIRED),
+        ('14:50', models.EventType.ALREADY_EXPIRED),
+        ('14:40', models.EventType.ALREADY_EXPIRED),
+        ('14:30', models.EventType.ALREADY_EXPIRED),
+        ('12:20', models.EventType.ALREADY_EXPIRED),
+        ('05:10', models.EventType.ALREADY_EXPIRED),
+        ('15:20:40', models.EventType.EXPIRE_AT_10_MINUTES),
+        ('15:25:00', models.EventType.EXPIRE_AT_15_MINUTES),
+        ('15:15:00', models.EventType.EXPIRE_AT_5_MINUTES),
         ('15:16', None),
         ('12:17', None),
         ('18:45', None),
