@@ -1,4 +1,3 @@
-import datetime
 from enum import Enum
 from uuid import UUID, uuid4
 
@@ -19,7 +18,6 @@ class EventType(Enum):
 
 class EventData(BaseModel):
     unit_id: int
-    write_off_at: datetime.datetime
 
 
 class Event(BaseModel):
