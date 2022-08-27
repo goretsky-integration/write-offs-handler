@@ -15,7 +15,6 @@ def get_application() -> FastAPI:
         reload=app_settings.debug,
     )
     application.include_router(api.events.router)
-    application.include_router(api.spreadsheets.router)
     return application
 
 

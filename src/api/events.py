@@ -1,4 +1,5 @@
 import asyncio
+import collections
 import json
 import uuid
 
@@ -9,6 +10,8 @@ from sse_starlette import EventSourceResponse, ServerSentEvent
 import models
 from api.dependencies import get_event_channels
 from resources.events import get_ping_message
+from services import logger
+from services.database_api import Units
 from services.event_channels import EventChannels
 
 router = APIRouter(prefix='/events')
@@ -46,13 +49,20 @@ async def events_stream(
     )
 
 
-@router.post(
-    path='/',
-    status_code=status.HTTP_201_CREATED,
-)
-async def create_event(
-        event: models.Event,
+@router.post('/')
+async def create_events(
+        worksheets_events: list[models.WorksheetEvents],
         event_channels: EventChannels = Depends(get_event_channels),
 ):
-    await event_channels.broadcast(event)
-    return Response(status_code=status.HTTP_201_CREATED)
+    errors = collections.defaultdict(list)
+    for worksheet_events in worksheets_events:
+        try:
+            unit = await Units.get_by_name(worksheet_events.worksheet_name)
+        except KeyError:
+            errors['unit_names'].append(worksheet_events.worksheet_name)
+            logger.warning(f'Invalid unit name {worksheet_events.worksheet_name}')
+        else:
+            for event in worksheet_events.events:
+                await event_channels.broadcast(models.Event(data={'unit_id': unit.id}, event_type=event))
+                logger.debug(f'New event {event.name} {unit.name}')
+    return {'errors': errors}
