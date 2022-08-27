@@ -1,3 +1,4 @@
+import pathlib
 from functools import lru_cache
 
 from dotenv import load_dotenv
@@ -6,7 +7,13 @@ from pydantic import BaseSettings, Field
 __all__ = (
     'get_app_settings',
     'get_redis_settings',
+    'ROOT_PATH',
+    'LOGS_FILE_PATH',
 )
+
+
+ROOT_PATH = pathlib.Path(__file__).parent.parent
+LOGS_FILE_PATH = ROOT_PATH / 'logs.log'
 
 load_dotenv()
 
