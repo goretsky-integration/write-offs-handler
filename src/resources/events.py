@@ -11,6 +11,6 @@ def get_ping_message() -> ServerSentEvent:
     return ServerSentEvent(
         event='ping',
         data={
-            'time': datetime.datetime.utcnow().isoformat(),
+            'time': datetime.datetime.utcnow().timestamp(),
         },
     )
