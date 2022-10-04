@@ -7,6 +7,7 @@ from pydantic import BaseSettings, Field
 __all__ = (
     'get_app_settings',
     'get_redis_settings',
+    'get_database_settings',
     'ROOT_PATH',
     'LOGS_FILE_PATH',
 )
@@ -28,6 +29,18 @@ class RedisSettings(BaseSettings):
     url: str = Field(env='REDIS_URL')
 
 
+class DatabaseSettings(BaseSettings):
+    host: str = Field(env='DATABASE_HOST')
+    port: str = Field(env='DATABASE_PORT')
+    name: str = Field(env='DATABASE_NAME')
+    user: str = Field(env='DATABASE_USER')
+    password: str = Field(env='DATABASE_PASSWORD')
+
+    @property
+    def url(self) -> str:
+        return f'{self.user}:{self.password}@{self.host}:{self.port}/{self.name}'
+
+
 @lru_cache
 def get_app_settings() -> AppSettings:
     return AppSettings()
@@ -36,3 +49,7 @@ def get_app_settings() -> AppSettings:
 @lru_cache
 def get_redis_settings() -> RedisSettings:
     return RedisSettings()
+
+@lru_cache
+def get_database_settings() -> DatabaseSettings:
+    return DatabaseSettings()
