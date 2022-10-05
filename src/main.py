@@ -9,12 +9,15 @@ from settings import get_app_settings
 def get_application() -> FastAPI:
     app_settings = get_app_settings()
     application = FastAPI(
+        title='Write Offs API',
         debug=app_settings.debug,
         host=app_settings.host,
         port=app_settings.port,
         reload=app_settings.debug,
     )
     application.include_router(api.events.router)
+    application.include_router(api.ingredients.router)
+    application.include_router(api.write_offs.router)
     return application
 
 
