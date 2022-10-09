@@ -61,7 +61,10 @@ async def create_write_off(
         ingredients: IngredientRepository = Depends(get_ingredients_repository),
         write_offs: WriteOffRepository = Depends(get_write_offs_repository),
 ):
-    unit = await Units.get_by_name(write_off_in.unit_name)
+    try:
+        unit = await Units.get_by_name(write_off_in.unit_name)
+    except KeyError:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, detail={'error': 'Unit by name is not found'})
     ingredient, _ = await ingredients.get_or_create(write_off_in.ingredient_name)
     return await write_offs.create(unit.id, write_off_in, ingredient)
 
