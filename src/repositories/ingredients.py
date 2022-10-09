@@ -48,3 +48,9 @@ class IngredientRepository(BaseRepository):
         async with self._session_maker() as session:
             result = await session.execute(statement)
         return [models.Ingredient(id=ingredient.id, name=ingredient.name) for ingredient in result.scalars()]
+
+    async def get_or_create(self, name: str) -> tuple[Ingredient, bool]:
+        try:
+            return await self.get_by_name(name), False
+        except exceptions.DoesNotExist:
+            return await self.create(models.IngredientIn(name=name)), True

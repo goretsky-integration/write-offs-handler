@@ -5,8 +5,9 @@ from pydantic import BaseModel, constr, validator
 from models.ingredients import Ingredient
 
 
-def to_naive_datetime(value: str) -> str:
-    return value.split('+')[0].rstrip('Z')
+def to_naive_datetime(value: str | None) -> str | None:
+    if isinstance(value, str):
+        return value.split('+')[0].rstrip('Z')
 
 
 class WriteOffIn(BaseModel):
@@ -20,9 +21,11 @@ class WriteOffIn(BaseModel):
 class WriteOff(BaseModel):
     id: int
     unit_id: int
-    ingredient: Ingredient
+    ingredient_name: str
     to_be_write_off_at: datetime.datetime
     written_off_at: datetime.datetime | None
+
+    _to_naive_datetime = validator('written_off_at', 'written_off_at', allow_reuse=True, pre=True)(to_naive_datetime)
 
 
 class WrittenOffAtIn(BaseModel):
