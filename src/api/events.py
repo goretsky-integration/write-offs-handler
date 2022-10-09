@@ -1,9 +1,8 @@
 import asyncio
 import collections
-import json
 import uuid
 
-from fastapi import APIRouter, Response, status
+from fastapi import APIRouter, status
 from fastapi.params import Depends
 from sse_starlette import EventSourceResponse, ServerSentEvent
 
@@ -14,7 +13,7 @@ from services import logger
 from services.database_api import Units
 from services.event_channels import EventChannels
 
-router = APIRouter(prefix='/events')
+router = APIRouter(prefix='/events', tags=['Events'])
 
 
 async def gen(event_channels: EventChannels, request_uuid: uuid.UUID, delay: int = 10):
