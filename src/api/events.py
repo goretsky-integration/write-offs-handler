@@ -62,6 +62,7 @@ async def create_events(
             logger.warning(f'Invalid unit name {worksheet_events.worksheet_name}')
         else:
             for event in worksheet_events.events:
-                await event_channels.broadcast(models.Event(data={'unit_id': unit.id}, event_type=event))
+                await event_channels.broadcast(models.Event(data={'unit_id': unit.id, 'unit_name': unit.name},
+                                                            event_type=event))
                 logger.debug(f'New event {event.name} {unit.name}')
     return {'errors': errors}
