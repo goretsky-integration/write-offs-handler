@@ -18,6 +18,7 @@ class EventType(Enum):
 
 class EventData(BaseModel):
     unit_id: int
+    unit_name: str
 
 
 class Event(BaseModel):

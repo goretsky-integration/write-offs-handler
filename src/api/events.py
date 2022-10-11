@@ -23,7 +23,7 @@ async def gen(event_channels: EventChannels, request_uuid: uuid.UUID, delay: int
             event = await event_channels.get_event_or_none(request_uuid)
             if event is not None:
                 yield ServerSentEvent(
-                    data=event.data.json(),
+                    data=event.data.json(ensure_ascii=False),
                     event=event.event_type.name,
                     id=str(event.id)
                 )
