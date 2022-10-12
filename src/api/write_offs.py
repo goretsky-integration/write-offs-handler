@@ -46,8 +46,8 @@ async def get_write_off_by_unit_id_and_ingredient_name(
     response_model=list[models.WriteOff],
 )
 async def get_write_offs(
-        from_datetime: datetime.datetime | None,
-        to_datetime: datetime.datetime | None,
+        from_datetime: datetime.datetime,
+        to_datetime: datetime.datetime,
         write_offs: WriteOffRepository = Depends(get_write_offs_repository),
 ):
     return await write_offs.get_py_period(from_datetime, to_datetime)
