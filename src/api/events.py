@@ -31,12 +31,13 @@ async def gen(event_channels: EventChannels, request_uuid: uuid.UUID, delay: int
     except asyncio.CancelledError as error:
         # async code here won't be executed, so unsubscribe method is not async
         event_channels.unsubscribe(request_uuid)
+        logger.debug(f'request {request_uuid} unsubscribed')
         raise error
 
 
 @router.get(
     path='/',
-    status_code=status.HTTP_207_MULTI_STATUS,
+    status_code=status.HTTP_200_OK,
 )
 async def events_stream(
         request_uuid: uuid.UUID = Depends(uuid.uuid4),
@@ -50,19 +51,12 @@ async def events_stream(
 
 @router.post('/')
 async def create_events(
-        worksheets_events: list[models.WorksheetEvents],
+        units_events: list[models.UnitEvents],
         event_channels: EventChannels = Depends(get_event_channels),
 ):
-    errors = collections.defaultdict(list)
-    for worksheet_events in worksheets_events:
-        try:
-            unit = await Units.get_by_name(worksheet_events.worksheet_name)
-        except KeyError:
-            errors['unit_names'].append(worksheet_events.worksheet_name)
-            logger.warning(f'Invalid unit name {worksheet_events.worksheet_name}')
-        else:
-            for event in worksheet_events.events:
-                await event_channels.broadcast(models.Event(data={'unit_id': unit.id, 'unit_name': unit.name},
-                                                            event_type=event))
-                logger.debug(f'New event {event.name} {unit.name}')
-    return {'errors': errors}
+    for unit_events in units_events:
+        data = {'unit_id': unit_events.unit_id, 'unit_name': unit_events.unit_name}
+        for event in unit_events.events:
+            await event_channels.broadcast(models.Event(data=data,
+                                                        event_type=event))
+            logger.debug(f'New event {unit_events}')
