@@ -1,6 +1,4 @@
 from fastapi import APIRouter
-from fastapi.params import Depends
-from pika.adapters.blocking_connection import BlockingChannel
 
 import models
 from db import message_queue
