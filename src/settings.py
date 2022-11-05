@@ -8,10 +8,10 @@ __all__ = (
     'get_app_settings',
     'get_redis_settings',
     'get_database_settings',
+    'get_rabbitmq_settings',
     'ROOT_PATH',
     'LOGS_FILE_PATH',
 )
-
 
 ROOT_PATH = pathlib.Path(__file__).parent.parent
 LOGS_FILE_PATH = ROOT_PATH / 'logs.log'
@@ -27,6 +27,10 @@ class AppSettings(BaseSettings):
 
 class RedisSettings(BaseSettings):
     url: str = Field(env='REDIS_URL')
+
+
+class RabbitMQSettings(BaseSettings):
+    url: str = Field(env='RABBITMQ_URL')
 
 
 class DatabaseSettings(BaseSettings):
@@ -50,6 +54,11 @@ def get_app_settings() -> AppSettings:
 def get_redis_settings() -> RedisSettings:
     return RedisSettings()
 
+
 @lru_cache
 def get_database_settings() -> DatabaseSettings:
     return DatabaseSettings()
+
+
+def get_rabbitmq_settings() -> RabbitMQSettings:
+    return RabbitMQSettings()
