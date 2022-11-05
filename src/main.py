@@ -1,5 +1,4 @@
 import uvicorn
-
 from fastapi import FastAPI
 
 import api
@@ -15,7 +14,7 @@ def get_application() -> FastAPI:
         port=app_settings.port,
         reload=app_settings.debug,
     )
-    application.include_router(api.events.router)
+    application.include_router(api.router)
     return application
 
 
