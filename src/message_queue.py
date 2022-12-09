@@ -1,4 +1,5 @@
 import contextlib
+import datetime
 import json
 
 import pika.exceptions
@@ -22,11 +23,17 @@ def get_message_queue_channel() -> BlockingChannel:
         yield channel
 
 
+def add_creation_time_to_message(message: dict) -> dict:
+    message = message.copy()
+    message['created_at'] = datetime.datetime.utcnow()
+    return message
+
+
 def send_json_message(channel: BlockingChannel, data: dict):
     channel.basic_publish(
         exchange='',
         routing_key='telegram-notifications',
-        body=json.dumps(data, default=str).encode('utf-8'),
+        body=json.dumps(add_creation_time_to_message(data), default=str).encode('utf-8'),
     )
 
 
