@@ -15,6 +15,7 @@ class AppSettings(BaseSettings):
     host: str = Field(env='APP_HOST')
     port: int = Field(env='APP_PORT')
     debug: bool = Field(env='DEBUG')
+    token: str = Field(env='TOKEN')
 
 
 class RabbitMQSettings(BaseSettings):
