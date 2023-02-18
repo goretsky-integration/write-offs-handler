@@ -15,6 +15,7 @@ class Settings(BaseSettings):
     debug: bool = Field(env='DEBUG')
     token: str = Field(env='TOKEN')
     rabbitmq_url: str = Field(env='RABBITMQ_URL')
+    database_url: str = Field('DATABASE_URL')
 
 
 settings = Settings()
