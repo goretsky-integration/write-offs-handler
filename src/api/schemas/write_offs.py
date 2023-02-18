@@ -8,7 +8,6 @@ __all__ = (
     'IngredientName',
     'ToBeWrittenOffAt',
     'WriteOffCreate',
-    'WriteOffUpdate',
 )
 
 UnitName: TypeAlias = constr(min_length=1, max_length=64)
@@ -20,7 +19,3 @@ class WriteOffCreate(BaseModel):
     unit_name: UnitName = Field(alias='unitName')
     ingredient_name: IngredientName = Field(alias='ingredientName')
     to_be_written_off_at: ToBeWrittenOffAt = Field(alias='toBeWrittenOffAt')
-
-
-class WriteOffUpdate(BaseModel):
-    is_written_off: bool
