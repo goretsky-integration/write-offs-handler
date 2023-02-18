@@ -23,7 +23,4 @@ class WriteOffCreate(BaseModel):
 
 
 class WriteOffUpdate(BaseModel):
-    unit_name: UnitName = Field(alias='unitName')
-    ingredient_name: IngredientName = Field(alias='ingredientName')
-    to_be_written_off_at: ToBeWrittenOffAt = Field(alias='toBeWrittenOffAt')
     is_written_off: bool

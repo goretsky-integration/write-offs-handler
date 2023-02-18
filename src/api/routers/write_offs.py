@@ -27,10 +27,12 @@ def remove_write_off(
 
 
 @router.patch(
-    path='/',
+    path='/unit/{unit_name}/ingredient/{ingredient_name}/',
     status_code=status.HTTP_204_NO_CONTENT,
 )
 def update_write_off(
+        unit_name: schemas.UnitName,
+        ingredient_name: schemas.IngredientName,
         write_off: schemas.WriteOffUpdate,
 ):
     return Response(status_code=status.HTTP_204_NO_CONTENT)
