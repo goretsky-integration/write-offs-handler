@@ -1,20 +1,19 @@
 import uvicorn
 from fastapi import FastAPI
 
-import api
-from settings import get_app_settings
+import api.routers
+from settings import settings
 
 
 def get_application() -> FastAPI:
-    app_settings = get_app_settings()
     application = FastAPI(
         title='Write Offs API',
-        debug=app_settings.debug,
-        host=app_settings.host,
-        port=app_settings.port,
-        reload=app_settings.debug,
+        debug=settings.debug,
+        host=settings.host,
+        port=settings.port,
+        reload=settings.debug,
     )
-    application.include_router(api.router)
+    application.include_router(api.routers.write_offs.router)
     return application
 
 
