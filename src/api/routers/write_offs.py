@@ -16,7 +16,7 @@ def create_write_off(
         write_offs: WriteOffRepository = Depends(dependencies.get_write_offs_repository),
         external_database_service: ExternalDatabaseService = Depends(dependencies.get_external_database_service),
 ):
-    unit = external_database_service.get_units(name=write_off.unit_name)
+    unit = external_database_service.get_unit_by_name(name=write_off.unit_name)
     write_offs.create(
         unit_id=unit.id,
         ingredient_name=write_off.ingredient_name,
