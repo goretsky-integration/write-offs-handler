@@ -32,5 +32,10 @@ def create_write_off(
 def remove_write_off(
         unit_name: schemas.UnitName,
         ingredient_name: schemas.IngredientName,
+        write_offs: WriteOffRepository = Depends(dependencies.get_write_offs_repository),
+        external_database_service: ExternalDatabaseService = Depends(dependencies.get_external_database_service),
 ):
-    return Response(status_code=status.HTTP_204_NO_CONTENT)
+    unit = external_database_service.get_unit_by_name(name=unit_name)
+    is_deleted = write_offs.remove(unit_id=unit.id, ingredient_name=ingredient_name)
+    response_status_code = status.HTTP_204_NO_CONTENT if is_deleted else status.HTTP_404_NOT_FOUND
+    return Response(status_code=response_status_code)

@@ -20,11 +20,12 @@ class WriteOffRepository(Repository):
             with session.begin():
                 session.add(write_off)
 
-    def remove(self, *, unit_id: int, ingredient_name: str) -> None:
+    def remove(self, *, unit_id: int, ingredient_name: str) -> bool:
         statement = (
             delete(WriteOff)
             .where(WriteOff.unit_id == unit_id, WriteOff.ingredient_name == ingredient_name)
         )
         with self._session_factory() as session:
             with session.begin():
-                session.execute(statement)
+                result = session.execute(statement)
+        return bool(result.rowcount)
