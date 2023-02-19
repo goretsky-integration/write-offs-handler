@@ -1,10 +1,34 @@
-from fastapi import APIRouter, Response, status, Depends
+from fastapi import APIRouter, Response, status, Depends, Query
+from pydantic import conint
+from pydantic.types import NonNegativeInt
 
 from api import schemas, dependencies
 from repositories import WriteOffRepository
 from services.external_database import ExternalDatabaseService
 
 router = APIRouter()
+
+
+@router.get(
+    path='/unit/{unit_name}/',
+    status_code=status.HTTP_200_OK,
+    response_model=schemas.PaginatedWriteOffs
+)
+def get_write_offs(
+        unit_name: schemas.UnitName = Query(),
+        limit: conint(ge=1, le=100) = Query(default=100),
+        offset: NonNegativeInt = Query(default=0),
+        write_offs: WriteOffRepository = Depends(dependencies.get_write_offs_repository),
+        external_database_service: ExternalDatabaseService = Depends(dependencies.get_external_database_service),
+):
+    unit = external_database_service.get_unit_by_name(name=unit_name)
+    write_offs_page = write_offs.get_by_unit_id(unit.id, limit=limit, offset=offset)
+    write_offs_next_page = write_offs.get_by_unit_id(unit.id, limit=1, offset=offset + limit)
+    is_end_of_list_reached = not write_offs_next_page
+    return {
+        'write_offs': write_offs_page,
+        'is_end_of_list_reached': is_end_of_list_reached,
+    }
 
 
 @router.post(
