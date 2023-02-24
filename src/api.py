@@ -23,5 +23,6 @@ def create_events(
     with get_message_queue_channel() as channel:
         for unit_events in units_events:
             for event in unit_events.events:
-                body = message_queue.prepare_message_body(unit_events.unit_id, unit_events.unit_name, event.name)
+                body = message_queue.prepare_message_body(unit_events.unit_id, unit_events.unit_name,
+                                                          event.type.name, event.ingredient_name)
                 message_queue.send_json_message(channel, body)
