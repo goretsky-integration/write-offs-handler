@@ -37,12 +37,13 @@ def send_json_message(channel: BlockingChannel, data: dict):
     )
 
 
-def prepare_message_body(unit_id: int, unit_name: str, event_type: str) -> dict:
+def prepare_message_body(unit_id: int, unit_name: str, event_type: str, ingredient_name: str) -> dict:
     return {
         'type': 'WRITE_OFFS',
         'unit_id': unit_id,
         'payload': {
             'event_type': event_type,
             'unit_name': unit_name,
+            'ingredient_name': ingredient_name,
         },
     }
