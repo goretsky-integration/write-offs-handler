@@ -5,6 +5,7 @@ from pydantic import BaseModel, PositiveInt, constr
 __all__ = (
     'UnitEvents',
     'EventType',
+    'Event',
 )
 
 
@@ -15,7 +16,12 @@ class EventType(Enum):
     ALREADY_EXPIRED = 'ALREADY_EXPIRED'
 
 
+class Event(BaseModel):
+    type: EventType
+    ingredient_name: str
+
+
 class UnitEvents(BaseModel):
     unit_id: PositiveInt
     unit_name: constr(min_length=2, max_length=255)
-    events: set[EventType]
+    events: list[Event]
