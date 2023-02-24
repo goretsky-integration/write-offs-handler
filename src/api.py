@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status
+from loguru import logger
 
 import message_queue
 import models
@@ -20,6 +21,7 @@ def create_events(
         token: str = Depends(TokenBearer()),
 ):
     validate_token(token)
+    logger.info(f'Event {units_events}')
     with get_message_queue_channel() as channel:
         for unit_events in units_events:
             for event in unit_events.events:

@@ -1,8 +1,13 @@
 import uvicorn
 from fastapi import FastAPI
+from loguru import logger
 
 import api
-from settings import get_app_settings
+from settings import get_app_settings, logging_settings
+
+
+def on_startup():
+    logger.add(logging_settings.logfile_path, level=logging_settings.level)
 
 
 def get_application() -> FastAPI:
