@@ -18,6 +18,7 @@ def get_application() -> FastAPI:
         host=app_settings.host,
         port=app_settings.port,
         reload=app_settings.debug,
+        on_startup=[on_startup],
     )
     application.include_router(api.router)
     return application
